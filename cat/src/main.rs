@@ -1,6 +1,6 @@
 use std::os;
-use std::io::File;
-use std::io::BufferedReader;
+use std::io;
+use std::io::{File, BufferedReader, IoResult};
 
 fn main() {
   let args = os::args();
@@ -11,6 +11,7 @@ fn main() {
       cat_file_at(p);
     }
   } else {
+    cat_stdin();
   }
 }
 
@@ -20,9 +21,19 @@ fn cat_file_at(pstr: &String) {
   let mut reader = BufferedReader::new(file);
 
   for line in reader.lines() {
-    match line {
-      Ok(content) => print!("{}", content),
-      Err(err)    => print!("error: {}", err)
-    }
+    print_io_result(line);
+  }
+}
+
+fn cat_stdin() {
+  for line in io::stdin().lines() {
+    print_io_result(line);
+  }
+}
+
+fn print_io_result(result: IoResult<String>) {
+  match result {
+    Ok(content) => print!("{}", content),
+    Err(err)    => print!("error: {}", err)
   }
 }
