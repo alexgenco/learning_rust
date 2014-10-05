@@ -1,0 +1,5 @@
+[package]
+
+name = "even_fibonacci_numbers"
+version = "0.0.1"
+authors = ["Alex Genco <alexgenco@gmail.com>"]
