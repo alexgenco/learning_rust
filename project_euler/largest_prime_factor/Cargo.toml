@@ -1,0 +1,5 @@
+[package]
+
+name = "largest_prime_factor"
+version = "0.0.1"
+authors = ["Alex Genco <alexgenco@gmail.com>"]
