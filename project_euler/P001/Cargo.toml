@@ -1,5 +1,5 @@
 [package]
 
-name = "even_fibonacci_numbers"
+name = "P001"
 version = "0.0.1"
 authors = ["Alex Genco <alexgenco@gmail.com>"]
