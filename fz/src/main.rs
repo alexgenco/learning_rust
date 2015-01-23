@@ -1,21 +1,41 @@
 use std::io::stdin;
 use std::os::args;
+use std::io::File;
+use std::io::Command;
 
 fn main() {
-    let query = args()[1].to_string();
     let mut lines = Vec::new();
 
     for result in stdin().lock().lines() {
         lines.push(result.unwrap().trim().to_string());
     }
 
-    for line_str in lines.iter() {
-        let line = line_str.to_string();
+    read_loop(lines);
+}
 
-        if fuzzy_match(&query, &line) {
-            println!("{}", line);
+fn read_loop(lines: Vec<String>) {
+    Command::new("/bin/stty").arg("-echo").arg("-icanon").arg("-icrnl").spawn().unwrap().wait();
+
+    let tty_path = Path::new("/dev/tty");
+    let mut tty = File::open(&tty_path);
+    let mut query = "".to_string();
+    let mut input: char;
+
+    loop {
+        input = tty.read_byte().unwrap() as char;
+        let idx = query.len();
+        query.insert(idx, input);
+
+        for line_str in lines.iter() {
+            let line = line_str.to_string();
+
+            if fuzzy_match(&query, &line) {
+                println!("{}", line);
+            }
         }
     }
+
+    Command::new("/bin/stty").arg("sane").spawn().unwrap().wait();
 }
 
 fn fuzzy_match(query: &String, line: &String) -> bool {
