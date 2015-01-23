@@ -22,8 +22,7 @@ fn fuzzy_match(query: &String, line: &String) -> bool {
     let mut line_chars = line.chars();
     let mut result = true;
 
-    for _query_char in query.chars() {
-        let query_char = _query_char.to_lowercase();
+    for query_char in query.chars() {
         let mut curr: Option<char>;
 
         loop {
@@ -31,7 +30,11 @@ fn fuzzy_match(query: &String, line: &String) -> bool {
 
             match curr {
                 Some(ch) => {
-                    if ch.to_lowercase() == query_char { break; }
+                    if query_char.is_uppercase() {
+                        if ch == query_char { break; }
+                    } else {
+                        if ch.to_lowercase() == query_char { break; }
+                    }
                 },
                 None => {
                     result = false;
@@ -47,7 +50,6 @@ fn fuzzy_match(query: &String, line: &String) -> bool {
 #[test]
 fn test_fuzzy_match() {
     let query = "ac".to_string();
-
     assert!(fuzzy_match(&query, &"abc".to_string()));
     assert!(fuzzy_match(&query, &"zac".to_string()));
     assert!(fuzzy_match(&query, &"Abc".to_string()));
@@ -55,4 +57,8 @@ fn test_fuzzy_match() {
 
     assert!(!fuzzy_match(&query, &"ab".to_string()));
     assert!(!fuzzy_match(&query, &"ca".to_string()));
+
+    let cased_query = "aC".to_string();
+    assert!(fuzzy_match(&cased_query, &"abCd".to_string()));
+    assert!(!fuzzy_match(&cased_query, &"abcd".to_string()));
 }
